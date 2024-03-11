@@ -1,0 +1,52 @@
+<div class="grid grid-cols-4 gap-10">
+  <table class="col-span-3">
+    <tbody>
+      <%= for {book, index} <- Enum.with_index(@books) do %>
+        <tr class={"shadow #{if rem(index, 2) == 1, do: "bg-white", else: "bg-violet-50"}"}>
+          <td class="px-2 py-3">
+            <img src={book.cover_url} alt={book.title} class="w-60" />
+          </td>
+          <td>
+            <.link href={~p"/books/#{book.id}"} class="mb-3">
+              <h1 class="text-xl font-bold hover:cursor-pointer hover:underline">
+                <%= book.title %>
+              </h1>
+            </.link>
+            <%!-- <%= link_to (book_path(book)) do %>
+              <h1 class="text-xl font-bold mb-3 hover:cursor-pointer hover:underline">
+                <%= book.title %>
+              </h1>
+            <% end %> --%>
+            <p class="max-w-xl">
+              <%= String.slice(book.description, 0, 200) <>
+                if String.length(book.description) > 200, do: "...", else: "" %>
+            </p>
+          </td>
+          <td>
+            <ul>
+              <li>
+                <.link href={~p"/books/edit/#{book.id}"} class="hover:underline">
+                  Edit
+                </.link>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          <div class="my-8">
+            <.link
+              href={~p"/books/new"}
+              class="rounded-lg py-3 w-1/2 px-5 bg-green-600 text-white block font-medium"
+            >
+              New Book
+            </.link>
+          </div>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

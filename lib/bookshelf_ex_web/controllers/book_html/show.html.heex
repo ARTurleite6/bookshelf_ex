@@ -1,0 +1,25 @@
+<div class="w-2/3 mx-auto">
+  <h1 class="font-bold text-5xl pb-8"><%= @book.title %></h1>
+  <div class="flex">
+    <image src={@book.cover_url} , class="max-h-96 justify-start mr-8" />
+    <div class="flex flex-col">
+      <span class="mb-5 text-sm bg-violet-500 text-white p-2 w-fit rounded-2xl shadow">
+        <%= format_genre(@book.genre) %>
+      </span>
+      <p><%= @book.description %></p>
+      <%= if !is_nil(@book.active_reservation) do %>
+        <div class="flex pt-12">
+          <%!-- <%= image_tag(~c"bookmark-regular.svg", class: ~c"pr-1 w-6") %> --%>
+          <span>
+            <span class="font-bold">
+              <%= BookshelfEx.Accounts.User.full_name(@book.active_reader) %>
+            </span>
+            reserved <%= @book.title %> on <%= DateTime.to_date(
+              @book.active_reservation.inserted_at
+            ) %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
