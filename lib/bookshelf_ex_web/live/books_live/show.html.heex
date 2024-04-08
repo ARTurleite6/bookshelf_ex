@@ -1,0 +1,34 @@
+<div class="w-2/3 mx-auto">
+  <h1 class="font-bold text-5xl pb-8"><%= @book.title %></h1>
+  <div class="flex">
+    <img src={@book.cover_url} class="max-h-96 justify-start mr-8" />
+    <div class="flex flex-col">
+      <p><%= @book.description %></p>
+      <%= cond do %>
+        <% Book.reserved?(@book) -> %>
+          <div class="flex pt-12">
+            <.icon name="hero-bookmark" class="pr-1" />
+            <span>
+              <span class="font-bold">
+                <%= User.full_name(@book.active_reader) %>
+                <span>
+                  reserved <%= @book.title %> on <%= DateTime.to_date(
+                    @book.active_reservation.inserted_at
+                  ) %>
+                </span>
+              </span>
+            </span>
+          </div>
+        <% Book.available?(@book) and !User.actively_reading?(@current_user.account) -> %>
+          <div class="pt-12">
+            <.button
+              phx-click="reserve"
+              class="w-full rounded-lg py-3 px-5 text-white font-medium cursor-pointer"
+            >
+              Reserve a book
+            </.button>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
