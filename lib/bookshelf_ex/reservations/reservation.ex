@@ -17,16 +17,31 @@ defmodule BookshelfEx.Reservations.Reservation do
   def changeset(reservation, attrs) do
     reservation
     |> cast(attrs, [:user_id, :book_id, :returned_on])
-    |> validate_required([:user_id, :book_id, :returned_on])
+    |> validate_required([:user_id, :book_id])
     |> validate_book_has_no_active_reservation()
     |> validate_user_has_no_active_reservation()
+  end
+
+  def return_changeset(reservation, attrs) do
+    reservation
+    |> cast(attrs, [:returned_on])
+    |> validate_required([:returned_on])
+    |> validate_returned_on_cannot_be_in_past()
+  end
+
+  defp validate_returned_on_cannot_be_in_past(changeset) do
+    if get_field(changeset, :returned_on) < Date.utc_today() do
+      add_error(changeset, :returned_on, "cannot be in the past")
+    else
+      changeset
+    end
   end
 
   defp validate_user_has_no_active_reservation(changeset) do
     user_id = get_field(changeset, :user_id)
 
     is_reserved =
-      Repo.get!(BookshelfEx.Accounts.User, user_id)
+      Repo.get!(BookshelfEx.Users.User, user_id)
       |> BookshelfEx.Users.User.actively_reading?()
 
     if is_reserved do

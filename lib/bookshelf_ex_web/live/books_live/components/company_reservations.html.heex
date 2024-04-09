@@ -1,0 +1,17 @@
+<div class="bg-violet-50 shadow h-fit p-8">
+  <h2 class="font-bold mb-2 text-xl">Company reading list</h2>
+  <div :for={reservation <- @company_reservations} class="bg-white shadow h-fit p-4 my-4 rounded">
+    <.link navigate={~p"/books/#{reservation.book_id}"}>
+      <h1 class="text-xl font-bold hover:underline"><%= reservation.book.title %></h1>
+    </.link>
+    <div class="flex items-center mt-2">
+      <.icon name="hero-arrow-down" class="pr-1">
+        <span>
+          Reserved by <%= reservation.user.full_name %> on <%= DateTime.to_date(
+            reservation.inserted_at
+          ) %>
+        </span>
+      </.icon>
+    </div>
+  </div>
+</div>

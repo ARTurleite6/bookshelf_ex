@@ -1,6 +1,7 @@
 defmodule BookshelfEx.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias BookshelfEx.Repo
 
   schema "accounts" do
     field :first_name, :string
@@ -17,14 +18,18 @@ defmodule BookshelfEx.Users.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def changeset_registration(user, attrs) do
     user
     |> cast(attrs, [:first_name, :last_name, :is_admin])
+    |> cast_assoc(:user,
+      with: &BookshelfEx.Accounts.User.registration_changeset/2,
+      required: true
+    )
     |> validate_required([:first_name, :last_name, :is_admin])
   end
 
   def actively_reading?(%__MODULE__{} = user) do
-    is_nil(user.active_reading)
+    !is_nil(user |> Repo.preload(:active_reading) |> Map.get(:active_reading))
   end
 
   def full_name(%__MODULE__{} = user) do

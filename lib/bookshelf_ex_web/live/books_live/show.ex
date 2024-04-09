@@ -1,21 +1,21 @@
 defmodule BookshelfExWeb.BooksLive.Show do
-  alias BookshelfEx.Repo
   alias BookshelfEx.Users
   use BookshelfExWeb, :live_view
   alias BookshelfEx.Books
   alias BookshelfEx.Books.Book
   alias BookshelfEx.Users.User
+  alias BookshelfEx.Repo
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    book = Books.get_book!(id, preloads: [:active_reader])
+    book = Books.get_book!(id, assocs: [:active_reader])
 
     socket =
       socket
       |> assign(book: book)
       |> assign(
         :current_user,
-        Users.with_account(socket.assigns.current_user)
+        Users.with_assoc(socket.assigns.current_user, :account)
       )
 
     {:ok, socket}

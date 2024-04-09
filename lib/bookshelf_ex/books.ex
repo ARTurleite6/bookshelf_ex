@@ -10,7 +10,7 @@ defmodule BookshelfEx.Books do
   end
 
   def get_book!(id, opts \\ []) do
-    preloads = Keyword.get(opts, :preloads, [])
+    preloads = Keyword.get(opts, :assocs, [])
 
     Repo.get!(Book, id) |> Repo.preload(preloads)
   end
@@ -22,7 +22,9 @@ defmodule BookshelfEx.Books do
   end
 
   def reserve_book(%Book{} = book, %Users.User{} = user) do
-    Repo.insert(%Reservation{book_id: book.id, user_id: user.id})
+    %Reservation{}
+    |> Reservation.changeset(%{book_id: book.id, user_id: user.id})
+    |> Repo.insert()
   end
 
   def update_book(%Book{} = book, attrs) do

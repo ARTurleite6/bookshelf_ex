@@ -19,7 +19,7 @@
               </span>
             </span>
           </div>
-        <% Book.available?(@book) and !User.actively_reading?(@current_user.account) -> %>
+        <% !User.actively_reading?(@current_user.account) -> %>
           <div class="pt-12">
             <.button
               phx-click="reserve"
@@ -28,6 +28,7 @@
               Reserve a book
             </.button>
           </div>
+        <% true -> %>
       <% end %>
     </div>
   </div>

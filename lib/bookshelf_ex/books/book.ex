@@ -1,4 +1,5 @@
 defmodule BookshelfEx.Books.Book do
+  alias BookshelfEx.Repo
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -37,7 +38,7 @@ defmodule BookshelfEx.Books.Book do
   end
 
   def reserved?(book = %BookshelfEx.Books.Book{}) do
-    book.active_reservation != nil
+    !(Repo.preload(book, :active_reservation).active_reservation |> is_nil())
   end
 
   def available?(book = %BookshelfEx.Books.Book{}) do

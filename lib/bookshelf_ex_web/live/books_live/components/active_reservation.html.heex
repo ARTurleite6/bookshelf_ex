@@ -1,0 +1,23 @@
+<div :if={!is_nil(@active_reservation)}>
+  <h2 class="font-bold mb-2 text-xl">You're reading</h2>
+  <div class="bg-white shadow f-fit p-4 my-4 rounded">
+    <.link navigate={~p"/books/#{@active_reservation.book_id}"}>
+      <h1 class="text-xl font-bold hover:underline"><%= @active_reservation.book.title %></h1>
+    </.link>
+
+    <div class="flex items-center mt-2">
+      <.icon name="hero-arrow-down" class="pr-1" />
+      <span>Reserved on <%= DateTime.to_date(@active_reservation.inserted_at) %></span>
+    </div>
+
+    <div class="flex items-center justify-center mt-4 w-full">
+      <.button
+        phx-click="return_book"
+        phx-value-reservation_id={@active_reservation.id}
+        class="rounded-lg py-3 text-white font-medium cursor-pointer hover:underline w-full"
+      >
+        Return book
+      </.button>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,8 @@
 <div class="grid grid-cols-4 gap-10">
+  <div class="grid-cols-1">
+    <.active_reservation active_reservation={@active_reservation} />
+    <.company_reservations company_reservations={@company_reservations} />
+  </div>
   <table class="col-span-3">
     <tbody id="books" phx-update="stream">
       <tr
