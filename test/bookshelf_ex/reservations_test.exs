@@ -1,9 +1,8 @@
 defmodule BookshelfEx.ReservationsTest do
   use BookshelfEx.DataCase
-
-  alias BookshelfEx.Reservations
-  alias BookshelfEx.Repo
   import BookshelfEx.Factory
+  alias BookshelfEx.Repo
+  alias BookshelfEx.Reservations
 
   describe "list_reservations/0" do
     test "it lists all reservations" do
@@ -11,6 +10,16 @@ defmodule BookshelfEx.ReservationsTest do
       reservations = insert_list(3, :reservation, user: user.account)
 
       assert reservations |> Repo.reload!() == Reservations.list_reservations()
+    end
+  end
+
+  describe "company_reservations/1" do
+    test "it lists all reservations of the company" do
+      user = insert(:account)
+      reservations = insert_list(3, :reservation, user: user.account)
+      another_user = insert(:account)
+
+      assert reservations == Reservations.company_reservations(another_user.account.id) |> Reservations.with_assoc([:user, :book])
     end
   end
 

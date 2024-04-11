@@ -1,4 +1,5 @@
 defmodule BookshelfEx.Users do
+
   alias BookshelfEx.Repo
   alias BookshelfEx.{Accounts, Accounts.User}
 
@@ -12,8 +13,8 @@ defmodule BookshelfEx.Users do
     )
   end
 
-  def with_assoc(%Accounts.User{} = user, assoc) do
-    Repo.preload(user, assoc)
+  def with_assoc(user_or_users, assoc) do
+    Repo.preload(user_or_users, assoc)
   end
 
   def active_reservation(%Accounts.User{} = user) do

@@ -31,7 +31,7 @@ defmodule BookshelfEx.Reservations do
   def company_reservations(user_id, opts \\ []) do
     assocs = Keyword.get(opts, :assocs, [])
 
-    Repo.all(from r in Reservation, where: r.user_id != ^user_id and not is_nil(r.returned_on))
+    Repo.all(from r in Reservation, where: r.user_id != ^user_id and is_nil(r.returned_on))
     |> Repo.preload(assocs)
   end
 
@@ -53,7 +53,7 @@ defmodule BookshelfEx.Reservations do
     Repo.all(query)
   end
 
-  def with_assoc(%Reservation{} = reservation, assocs) do
-    Repo.preload(reservation, assocs)
+  def with_assoc(reservation_or_reservations, assocs) do
+    Repo.preload(reservation_or_reservations, assocs)
   end
 end
