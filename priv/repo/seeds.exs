@@ -55,21 +55,18 @@ book =
 user =
   BookshelfEx.Accounts.User.registration_changeset(%BookshelfEx.Accounts.User{}, %{
     email: "arturleite@deemaze.com",
-    password: "1234567891012"
+    password: "1234567891012",
+    account: %{
+      first_name: "Artur",
+      last_name: "Leite",
+      is_admin: true
+    }
   })
   |> Repo.insert!()
-
-account =
-  Repo.insert!(%User{
-    first_name: "Artur",
-    last_name: "Leite",
-    is_admin: true,
-    user_id: user.id
-  })
 
 alias BookshelfEx.Reservations.Reservation
 
 Repo.insert!(%Reservation{
   book: book,
-  user: account
+  user: user.account
 })

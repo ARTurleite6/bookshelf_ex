@@ -1,4 +1,5 @@
 defmodule BookshelfExWeb.BooksLive.Show do
+  alias BookshelfEx.Services.ReserveBookService
   alias BookshelfEx.Users
   use BookshelfExWeb, :live_view
   alias BookshelfEx.Books
@@ -27,8 +28,7 @@ defmodule BookshelfExWeb.BooksLive.Show do
     book = socket.assigns.book
 
     reservation =
-      book
-      |> Books.reserve_book(current_user.account)
+      ReserveBookService.reserve_book(book, current_user)
 
     case reservation do
       {:ok, _} ->

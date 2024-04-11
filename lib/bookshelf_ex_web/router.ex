@@ -74,8 +74,9 @@ defmodule BookshelfExWeb.Router do
       live "/books", BooksLive.Index, :index
       live "/books/new", BooksLive.Index, :new
       live "/books/:id/edit", BooksLive.Index, :edit
-
       live "/books/:id", BooksLive.Show, :show
+
+      live "/reservations", ReservationsLive.Index, :index
     end
   end
 

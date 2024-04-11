@@ -3,8 +3,7 @@ defmodule BookshelfExWeb.UserRegistrationLive do
   use BookshelfExWeb, :live_view
 
   alias BookshelfEx.Accounts
-  alias BookshelfEx.Users
-  alias BookshelfEx.Users.User
+  alias BookshelfEx.Accounts.User
 
   def render(assigns) do
     ~H"""
@@ -36,8 +35,10 @@ defmodule BookshelfExWeb.UserRegistrationLive do
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:password]} type="password" label="Password" required />
 
-        <.input field={@form[:first_name]} type="text" label="First Name" required />
-        <.input field={@form[:last_name]} type="text" label="Last Name" required />
+        <.inputs_for :let={account_form} field={@form[:account]}>
+          <.input field={account_form[:first_name]} type="text" label="First Name" required />
+          <.input field={account_form[:last_name]} type="text" label="Last Name" required />
+        </.inputs_for>
 
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
@@ -48,7 +49,7 @@ defmodule BookshelfExWeb.UserRegistrationLive do
   end
 
   def mount(_params, _session, socket) do
-    changeset = Users.change_user_registration(%User{})
+    changeset = Accounts.change_user_registration(%User{})
 
     socket =
       socket
@@ -59,15 +60,15 @@ defmodule BookshelfExWeb.UserRegistrationLive do
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
-    case Users.register_user(user_params) do
+    case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
-            (user |> Repo.preload(:user)).user,
+            user,
             &url(~p"/users/confirm/#{&1}")
           )
 
-        changeset = Users.change_user_registration(user)
+        changeset = Accounts.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -76,7 +77,7 @@ defmodule BookshelfExWeb.UserRegistrationLive do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = Users.change_user_registration(%User{}, user_params)
+    changeset = Accounts.change_user_registration(%User{}, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 

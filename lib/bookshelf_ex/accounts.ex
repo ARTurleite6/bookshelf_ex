@@ -8,6 +8,10 @@ defmodule BookshelfEx.Accounts do
 
   alias BookshelfEx.Accounts.{User, UserToken, UserNotifier}
 
+  def with_assoc(%User{} = user, assocs) do
+    Repo.preload(user, assocs)
+  end
+
   ## Database getters
 
   @doc """

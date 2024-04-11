@@ -17,7 +17,7 @@ defmodule BookshelfEx.Factory do
   def reservation_factory do
     %Reservation{
       book: build(:book),
-      user: build(:user)
+      user: build(:account).account
     }
   end
 
@@ -25,7 +25,7 @@ defmodule BookshelfEx.Factory do
     %User{
       first_name: Faker.Person.first_name(),
       last_name: Faker.Person.last_name(),
-      user: build(:account)
+      is_admin: false
     }
   end
 
@@ -33,7 +33,8 @@ defmodule BookshelfEx.Factory do
     %Accounts.User{
       email: Faker.Internet.email(),
       password: "password",
-      hashed_password: "askdjfsdklfj"
+      hashed_password: "askdjfsdklfj",
+      account: build(:user)
     }
   end
 end

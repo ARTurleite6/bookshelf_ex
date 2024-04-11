@@ -10,7 +10,11 @@ defmodule BookshelfEx.AccountsFixtures do
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
       email: unique_user_email(),
-      password: valid_user_password()
+      password: valid_user_password(),
+      account: %{
+        first_name: Faker.Person.first_name(),
+        last_name: Faker.Person.last_name()
+      }
     })
   end
 

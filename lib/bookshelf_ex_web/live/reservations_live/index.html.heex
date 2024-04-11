@@ -1,0 +1,38 @@
+<div class="mx-auto">
+  <h1 class="font-bold text-5xl mb-8">My reservations</h1>
+
+  <div id="reservations" phx-update="stream">
+    <div
+      :for={{id, reservation} <- @streams.reservations}
+      id={id}
+      class="grid grid-cols-3 p-3 shadow"
+    >
+      <div class="flex items-center justify-start">
+        <.link navigate={~p"/books/#{reservation.book_id}"}>
+          <h1 class="text-xl font-bold hover:underline"><%= reservation.book.title %></h1>
+        </.link>
+      </div>
+
+      <div class="flex items-center justify-center">
+        <.icon name="hero-arrow-down" class="pr-1" />
+        <span>Reserved on <%= DateTime.to_date(reservation.inserted_at) %></span>
+      </div>
+
+      <%= if Reservation.returned?(reservation) do %>
+        <div class="flex items-center justify-center">
+          <.icon name="hero-arrow-up" class="pr-1" />
+          <p>Returned on <%= reservation.returned_on %></p>
+        </div>
+      <% else %>
+        <div class="flex items-center justify-center">
+          <.link
+            phx-click={JS.push("return_book", value: %{reservation_id: reservation.id})}
+            class="hover:underline"
+          >
+            Return book
+          </.link>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

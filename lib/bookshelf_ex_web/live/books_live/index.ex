@@ -1,9 +1,9 @@
 defmodule BookshelfExWeb.BooksLive.Index do
+  alias BookshelfEx.Services.ReturnBookService
   alias BookshelfEx.Repo
   use BookshelfExWeb, :live_view
-  alias BookshelfEx.Books
-  alias BookshelfEx.Books.Book
-  alias BookshelfEx.Users
+  alias BookshelfEx.{Books, Books.Book}
+  alias BookshelfEx.{Users, Users.User}
   alias BookshelfEx.Reservations
 
   embed_templates "components/*"
@@ -12,11 +12,15 @@ defmodule BookshelfExWeb.BooksLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    active_reservation =
-      Users.active_reservation(socket.assigns.current_user |> Users.with_assoc(:account))
+    current_user =
+      socket.assigns.current_user
+      |> Users.with_assoc(:account)
 
     active_reservation =
-      if !is_nil(active_reservation), do: Reservations.with_assoc(active_reservation, :book)
+      Users.active_reservation(current_user)
+
+    active_reservation =
+      if active_reservation, do: Reservations.with_assoc(active_reservation, :book)
 
     socket =
       socket
@@ -24,7 +28,9 @@ defmodule BookshelfExWeb.BooksLive.Index do
       |> assign(:active_reservation, active_reservation)
       |> assign(
         :company_reservations,
-        Reservations.company_reservations(socket.assigns.current_user.id)
+        Reservations.company_reservations(current_user.account.id,
+          assocs: [:book, :user]
+        )
       )
 
     {:ok, socket}
@@ -37,7 +43,7 @@ defmodule BookshelfExWeb.BooksLive.Index do
 
   @impl true
   def handle_event("return_book", %{"reservation_id" => reservation_id}, socket) do
-    case Reservations.return_by_reservation_id(reservation_id) do
+    case ReturnBookService.return_book(reservation_id) do
       {:ok, _} ->
         socket =
           socket
@@ -47,7 +53,7 @@ defmodule BookshelfExWeb.BooksLive.Index do
 
         {:noreply, socket}
 
-      {:error, _} ->
+      {:error, _changeset} ->
         socket = socket |> put_flash(:error, "Error returning the book")
         {:noreply, socket}
     end

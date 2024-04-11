@@ -27,11 +27,26 @@ defmodule BookshelfEx.Reservations.Reservation do
     |> cast(attrs, [:returned_on])
     |> validate_required([:returned_on])
     |> validate_returned_on_cannot_be_in_past()
+    |> validate_returned_on_cannot_be_revised(reservation)
+  end
+
+  def returned?(reservation) do
+    !is_nil(reservation.returned_on)
   end
 
   defp validate_returned_on_cannot_be_in_past(changeset) do
     if get_field(changeset, :returned_on) < Date.utc_today() do
       add_error(changeset, :returned_on, "cannot be in the past")
+    else
+      changeset
+    end
+  end
+
+  defp validate_returned_on_cannot_be_revised(changeset, reservation_was) do
+    returned_on_was = reservation_was.returned_on
+
+    if returned_on_was do
+      add_error(changeset, :returned_on, "cannot be revised")
     else
       changeset
     end

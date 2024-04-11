@@ -1,0 +1,21 @@
+<div class="flex justify-between px-20 py-10">
+  <.link navigate={~p"/"}>
+    <h1 class="font-bold text-xl">Bookshelf</h1>
+  </.link>
+  <div :if={@current_user} class="flex gap-4">
+    <.link navigate={~p"/reservations"}>
+      <.icon name="hero-bookmark" />
+    </.link>
+    <div class="flex gap-2">
+      <%= @current_user.account.first_name %>
+      <.icon name="hero-user" />
+    </div>
+    <.link
+      href={~p"/users/log_out"}
+      method="delete"
+      class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+    >
+      <.icon name="hero-arrow-left-start-on-rectangle" />
+    </.link>
+  </div>
+</div>

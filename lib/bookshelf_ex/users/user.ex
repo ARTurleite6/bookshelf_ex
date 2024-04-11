@@ -18,13 +18,9 @@ defmodule BookshelfEx.Users.User do
   end
 
   @doc false
-  def changeset_registration(user, attrs) do
+  def changeset(user, attrs) do
     user
     |> cast(attrs, [:first_name, :last_name, :is_admin])
-    |> cast_assoc(:user,
-      with: &BookshelfEx.Accounts.User.registration_changeset/2,
-      required: true
-    )
     |> validate_required([:first_name, :last_name, :is_admin])
   end
 

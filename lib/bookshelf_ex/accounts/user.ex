@@ -39,6 +39,7 @@ defmodule BookshelfEx.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
+    |> cast_assoc(:account, with: &BookshelfEx.Users.User.changeset/2, required: true)
     |> validate_email(opts)
     |> validate_password(opts)
   end

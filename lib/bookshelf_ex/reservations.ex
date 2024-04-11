@@ -4,8 +4,16 @@ defmodule BookshelfEx.Reservations do
 
   import Ecto.Query
 
-  def company_reservations(user_id) do
-    Repo.all(from r in Reservation, where: r.user_id == ^user_id)
+  def list_reservations(opts \\ []) do
+    assocs = Keyword.get(opts, :assocs, [])
+    Repo.all(from r in Reservation, order_by: [desc: r.inserted_at]) |> Repo.preload(assocs)
+  end
+
+  def company_reservations(user_id, opts \\ []) do
+    assocs = Keyword.get(opts, :assocs, [])
+
+    Repo.all(from r in Reservation, where: r.user_id != ^user_id and not is_nil(r.returned_on))
+    |> Repo.preload(assocs)
   end
 
   def return_by_reservation_id(id) do

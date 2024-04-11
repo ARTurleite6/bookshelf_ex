@@ -1,22 +1,16 @@
 defmodule BookshelfEx.Users do
-  alias BookshelfEx.Users
   alias BookshelfEx.Repo
   alias BookshelfEx.Accounts
+  alias BookshelfEx.Accounts.User
 
-  def register_user(attrs) do
-    %Users.User{}
-    |> Users.User.changeset_registration(attrs)
-    |> Repo.insert()
-  end
+  import Ecto.Query
 
-  def change_user_registration(%Users.User{} = user, attrs \\ %{}) do
-    Users.User.changeset_registration(user, attrs)
-  end
+  def list_admins(opts \\ []) do
+    assocs = Keyword.get(opts, :assocs, [])
 
-  def create_user(attrs) do
-    %Users.User{}
-    |> Users.User.changeset_registration(attrs)
-    |> Repo.insert()
+    Repo.all(
+      from u in User, join: a in assoc(u, :account), where: a.is_admin == true, preload: ^assocs
+    )
   end
 
   def with_assoc(%Accounts.User{} = user, assoc) do

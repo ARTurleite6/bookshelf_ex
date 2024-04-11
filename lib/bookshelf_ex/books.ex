@@ -22,9 +22,10 @@ defmodule BookshelfEx.Books do
   end
 
   def reserve_book(%Book{} = book, %Users.User{} = user) do
-    %Reservation{}
-    |> Reservation.changeset(%{book_id: book.id, user_id: user.id})
-    |> Repo.insert()
+    reservation =
+      %Reservation{}
+      |> Reservation.changeset(%{book_id: book.id, user_id: user.id})
+      |> Repo.insert()
   end
 
   def update_book(%Book{} = book, attrs) do

@@ -5,13 +5,12 @@
       <h1 class="text-xl font-bold hover:underline"><%= reservation.book.title %></h1>
     </.link>
     <div class="flex items-center mt-2">
-      <.icon name="hero-arrow-down" class="pr-1">
-        <span>
-          Reserved by <%= reservation.user.full_name %> on <%= DateTime.to_date(
-            reservation.inserted_at
-          ) %>
-        </span>
-      </.icon>
+      <.icon name="hero-arrow-down" class="pr-1" />
+      <span>
+        Reserved by <%= User.full_name(reservation.user) %> on <%= DateTime.to_date(
+          reservation.inserted_at
+        ) %>
+      </span>
     </div>
   </div>
 </div>
