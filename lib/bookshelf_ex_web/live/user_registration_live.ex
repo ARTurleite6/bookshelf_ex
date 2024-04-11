@@ -1,5 +1,4 @@
 defmodule BookshelfExWeb.UserRegistrationLive do
-  alias BookshelfEx.Repo
   use BookshelfExWeb, :live_view
 
   alias BookshelfEx.Accounts

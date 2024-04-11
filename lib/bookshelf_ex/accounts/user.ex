@@ -9,6 +9,7 @@ defmodule BookshelfEx.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_one :account, BookshelfEx.Users.User
+    has_many :notication_requests, BookshelfEx.Notifications.NotificationRequest
 
     timestamps(type: :utc_datetime)
   end

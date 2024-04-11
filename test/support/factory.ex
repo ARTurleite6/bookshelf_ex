@@ -1,5 +1,6 @@
 defmodule BookshelfEx.Factory do
   use ExMachina.Ecto, repo: BookshelfEx.Repo
+  alias BookshelfEx.Notifications.NotificationRequest
   alias BookshelfEx.Accounts
   alias BookshelfEx.Users.User
   alias BookshelfEx.Books.Book
@@ -17,7 +18,15 @@ defmodule BookshelfEx.Factory do
   def reservation_factory do
     %Reservation{
       book: build(:book),
-      user: build(:account).account
+      user: build(:account).account,
+      returned_on: nil
+    }
+  end
+
+  def notification_request_factory do
+    %NotificationRequest{
+      user: build(:account),
+      reservation: build(:reservation)
     }
   end
 

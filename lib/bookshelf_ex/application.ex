@@ -17,7 +17,8 @@ defmodule BookshelfEx.Application do
       # Start a worker by calling: BookshelfEx.Worker.start_link(arg)
       # {BookshelfEx.Worker, arg},
       # Start to serve requests, typically the last entry
-      BookshelfExWeb.Endpoint
+      BookshelfExWeb.Endpoint,
+      BookshelfEx.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

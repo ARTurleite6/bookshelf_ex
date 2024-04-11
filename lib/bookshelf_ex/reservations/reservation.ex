@@ -5,10 +5,13 @@ defmodule BookshelfEx.Reservations.Reservation do
   alias BookshelfEx.Repo
 
   schema "reservations" do
+    field :returned_on, :date
+
     belongs_to :user, BookshelfEx.Users.User
     belongs_to :book, BookshelfEx.Books.Book
 
-    field :returned_on, :date
+    has_many :notification_requests, BookshelfEx.Notifications.NotificationRequest
+    has_many :users_to_notify, through: [:notification_requests, :user]
 
     timestamps(type: :utc_datetime)
   end
@@ -32,6 +35,10 @@ defmodule BookshelfEx.Reservations.Reservation do
 
   def returned?(reservation) do
     !is_nil(reservation.returned_on)
+  end
+
+  def owner?(%__MODULE__{user_id: owner_id}, user_id) do
+    owner_id == user_id
   end
 
   defp validate_returned_on_cannot_be_in_past(changeset) do

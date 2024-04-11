@@ -1,8 +1,11 @@
 defmodule BookshelfExWeb.BooksLive.Show do
+  alias BookshelfEx.Reservations.Reservation
+  alias BookshelfEx.Reservations
   alias BookshelfEx.Services.ReserveBookService
   alias BookshelfEx.Users
   use BookshelfExWeb, :live_view
   alias BookshelfEx.Books
+  alias BookshelfEx.Accounts
   alias BookshelfEx.Books.Book
   alias BookshelfEx.Users.User
   alias BookshelfEx.Repo
@@ -10,16 +13,48 @@ defmodule BookshelfExWeb.BooksLive.Show do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     book = Books.get_book!(id, assocs: [:active_reader])
+    reservation = book.active_reservation
+
+    %Accounts.User{id: user_id} = socket.assigns.current_user
+
+    notification_request =
+      if reservation,
+        do: Reservations.user_notification_request(reservation.id, user_id),
+        else: nil
 
     socket =
       socket
       |> assign(book: book)
+      |> assign(notification_request: notification_request)
       |> assign(
         :current_user,
         Users.with_assoc(socket.assigns.current_user, :account)
       )
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("add_notifier", _params, socket) do
+    current_user = socket.assigns.current_user
+    reservation = socket.assigns.book.active_reservation
+
+    case Reservations.add_notification_request(reservation, current_user.id) do
+      {:ok, notification_request} ->
+        socket =
+          socket
+          |> put_flash(:info, "Notification request successfully added")
+          |> assign(:notification_request, notification_request)
+
+        {:noreply, socket}
+
+      {:error, _} ->
+        socket =
+          socket
+          |> put_flash(:error, "Error adding notification request")
+
+        {:noreply, socket}
+    end
   end
 
   @impl true
