@@ -1,7 +1,6 @@
 defmodule BookshelfEx.Users do
   alias BookshelfEx.Repo
-  alias BookshelfEx.Accounts
-  alias BookshelfEx.Accounts.User
+  alias BookshelfEx.{Accounts, Accounts.User}
 
   import Ecto.Query
 

@@ -1,6 +1,7 @@
 defmodule BookshelfExWeb.BooksLive.Form do
-  alias BookshelfEx.Books
   use BookshelfExWeb, :live_component
+
+  alias BookshelfEx.Books
 
   @impl true
   def mount(socket) do

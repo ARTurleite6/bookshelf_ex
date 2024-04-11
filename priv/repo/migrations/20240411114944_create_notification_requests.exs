@@ -11,5 +11,7 @@ defmodule BookshelfEx.Repo.Migrations.CreateNotificationRequests do
 
     create index(:notification_requests, [:user_id])
     create index(:notification_requests, [:reservation_id])
+
+    create unique_index(:notification_requests, [:user_id, :reservation_id])
   end
 end

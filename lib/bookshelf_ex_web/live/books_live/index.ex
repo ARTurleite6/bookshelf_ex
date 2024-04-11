@@ -1,7 +1,8 @@
 defmodule BookshelfExWeb.BooksLive.Index do
+  use BookshelfExWeb, :live_view
+
   alias BookshelfEx.Services.ReturnBookService
   alias BookshelfEx.Repo
-  use BookshelfExWeb, :live_view
   alias BookshelfEx.{Books, Books.Book}
   alias BookshelfEx.{Users, Users.User}
   alias BookshelfEx.Reservations

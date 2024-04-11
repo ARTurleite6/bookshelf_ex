@@ -1,13 +1,11 @@
 defmodule BookshelfExWeb.BooksLive.Show do
-  alias BookshelfEx.Reservations.Reservation
-  alias BookshelfEx.Reservations
-  alias BookshelfEx.Services.ReserveBookService
-  alias BookshelfEx.Users
   use BookshelfExWeb, :live_view
-  alias BookshelfEx.Books
+
+  alias BookshelfEx.{Reservations, Reservations.Reservation}
+  alias BookshelfEx.{Users, Users.User}
+  alias BookshelfEx.{Books, Books.Book}
   alias BookshelfEx.Accounts
-  alias BookshelfEx.Books.Book
-  alias BookshelfEx.Users.User
+  alias BookshelfEx.Services.ReserveBookService
   alias BookshelfEx.Repo
 
   @impl true

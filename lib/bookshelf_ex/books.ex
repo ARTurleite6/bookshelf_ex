@@ -1,9 +1,10 @@
 defmodule BookshelfEx.Books do
+  import Ecto.Query
+
   alias BookshelfEx.Users
   alias BookshelfEx.Reservations.Reservation
   alias BookshelfEx.Repo
   alias BookshelfEx.Books.Book
-  import Ecto.Query
 
   def list_books do
     Repo.all(from b in Book, order_by: [asc: b.inserted_at])

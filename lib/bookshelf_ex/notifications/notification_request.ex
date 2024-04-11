@@ -18,6 +18,7 @@ defmodule BookshelfEx.Notifications.NotificationRequest do
     notification_request
     |> cast(attrs, [:user_id, :reservation_id])
     |> validate_required([:user_id, :reservation_id])
+    |> unique_constraint([:user_id, :reservation_id])
     |> validate_user_cannot_be_the_same_as_reservation_owner()
   end
 
