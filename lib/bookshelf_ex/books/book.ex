@@ -37,11 +37,11 @@ defmodule BookshelfEx.Books.Book do
     |> validate_required([:title, :description, :cover_url, :genre])
   end
 
-  def reserved?(book = %BookshelfEx.Books.Book{}) do
+  def reserved?(%BookshelfEx.Books.Book{} = book) do
     !(Repo.preload(book, :active_reservation).active_reservation |> is_nil())
   end
 
-  def available?(book = %BookshelfEx.Books.Book{}) do
+  def available?(%BookshelfEx.Books.Book{} = book) do
     !reserved?(book)
   end
 end

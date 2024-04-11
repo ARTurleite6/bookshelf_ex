@@ -6,7 +6,7 @@ defmodule BookshelfEx.Mailers.AdminMailer do
   alias BookshelfEx.Books.Book
   import Swoosh.Email
 
-  def new_reservation_email(reservation = %Reservation{}, %User{} = recipient) do
+  def new_reservation_email(%Reservation{} = reservation, %User{} = recipient) do
     recipient = Users.with_assoc(recipient, :account)
     reservation = Reservations.with_assoc(reservation, [:book, :user])
 

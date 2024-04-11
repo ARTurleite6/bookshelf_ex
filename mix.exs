@@ -61,7 +61,9 @@ defmodule BookshelfEx.MixProject do
       {:bandit, "~> 1.2"},
       {:ex_machina, "~> 2.7", only: [:test]},
       {:faker, "~> 0.18.0", only: [:test]},
-      {:timex, "~> 3.7"}
+      {:timex, "~> 3.7"},
+      {:quantum, "~> 3.5"},
+      {:credo, "~> 1.7"}
     ]
   end
 
