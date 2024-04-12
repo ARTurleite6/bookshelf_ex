@@ -3,8 +3,8 @@ defmodule BookshelfEx.Repo.Migrations.CreateNotificationRequests do
 
   def change do
     create table(:notification_requests) do
-      add :user_id, references(:users, on_delete: :nothing), null: false
-      add :reservation_id, references(:reservations, on_delete: :nothing), null: false
+      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :reservation_id, references(:reservations, on_delete: :delete_all), null: false
 
       timestamps(type: :utc_datetime)
     end

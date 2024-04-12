@@ -3,8 +3,10 @@ defmodule BookshelfEx.Repo.Migrations.CreateTrades do
 
   def change do
     create table(:trades) do
-      add :receiving_reservation_id, references(:reservations, on_delete: :nothing), null: false
-      add :sending_reservation_id, references(:reservations, on_delete: :nothing), null: false
+      add :receiving_reservation_id, references(:reservations, on_delete: :delete_all),
+        null: false
+
+      add :sending_reservation_id, references(:reservations, on_delete: :delete_all), null: false
 
       timestamps(type: :utc_datetime)
     end

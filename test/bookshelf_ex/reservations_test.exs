@@ -19,7 +19,9 @@ defmodule BookshelfEx.ReservationsTest do
       reservations = insert_list(3, :reservation, user: user.account)
       another_user = insert(:account)
 
-      assert reservations == Reservations.company_reservations(another_user.account.id) |> Reservations.with_assoc([:user, :book])
+      assert reservations ==
+               Reservations.company_reservations(another_user.account.id)
+               |> Reservations.with_assoc([:user, :book])
     end
   end
 

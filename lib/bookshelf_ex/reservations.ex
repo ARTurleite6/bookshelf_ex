@@ -1,54 +1,58 @@
 defmodule BookshelfEx.Reservations do
   alias BookshelfEx.Notifications.NotificationRequest
-  alias BookshelfEx.Reservations.Reservation
   alias BookshelfEx.Repo
+  alias BookshelfEx.Reservations.Reservation
 
   import Ecto.Query
 
   def list_reservations(opts \\ []) do
     assocs = Keyword.get(opts, :assocs, [])
-    Repo.all(from r in Reservation, order_by: [desc: r.inserted_at]) |> Repo.preload(assocs)
+    Repo.all(from(r in Reservation, order_by: [desc: r.inserted_at])) |> Repo.preload(assocs)
   end
 
   def add_notification_request(%Reservation{} = reservation, user_id) do
-    Ecto.build_assoc(reservation, :notification_requests, user_id: user_id)
+    reservation
+    |> Ecto.build_assoc(:notification_requests, user_id: user_id)
     |> NotificationRequest.changeset(%{})
     |> NotificationRequest.validate_user_cannot_be_the_same_as_reservation_owner()
     |> Repo.insert()
   end
 
   def get_reservation!(id) do
-    Repo.get!(Reservation, id)
+    Reservation |> Repo.get!(id)
   end
 
   def user_notification_request(reservation_id, user_id) do
     Repo.one(
-      from n in NotificationRequest,
+      from(n in NotificationRequest,
         where: [user_id: ^user_id, reservation_id: ^reservation_id]
+      )
     )
   end
 
   def company_reservations(user_id, opts \\ []) do
     assocs = Keyword.get(opts, :assocs, [])
 
-    Repo.all(from r in Reservation, where: r.user_id != ^user_id and is_nil(r.returned_on))
+    Repo.all(from(r in Reservation, where: r.user_id != ^user_id and is_nil(r.returned_on)))
     |> Repo.preload(assocs)
   end
 
   def return_by_reservation_id(id) do
-    Repo.get(Reservation, id)
+    Reservation
+    |> Repo.get(id)
     |> Reservation.return_changeset(%{returned_on: Date.utc_today()})
     |> Repo.update()
   end
 
   def active_reservations_with_one_month do
     query =
-      from r in Reservation,
+      from(r in Reservation,
         where:
           is_nil(r.returned_on) and
             r.inserted_at <
               ^(DateTime.utc_now()
                 |> DateTime.add(-30, :day))
+      )
 
     Repo.all(query)
   end

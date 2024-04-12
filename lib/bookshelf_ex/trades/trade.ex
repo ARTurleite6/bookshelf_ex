@@ -14,6 +14,8 @@ defmodule BookshelfEx.Trades.Trade do
     trade
     |> cast(attrs, [:sending_reservation_id, :receiving_reservation_id])
     |> validate_required([:sending_reservation_id, :receiving_reservation_id])
-    |> unique_constraint([:sending_reservation_id, :receiving_reservation_id])
+    |> unique_constraint([:sending_reservation_id, :receiving_reservation_id],
+      name: :trades_sending_reservation_id_receiving_reservation_id_index
+    )
   end
 end

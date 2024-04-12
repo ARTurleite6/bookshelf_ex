@@ -22,15 +22,25 @@
                 </span>
               </span>
             </div>
-            <.button
-              :if={
-                is_nil(@notification_request) and
-                  !Reservation.owner?(@book.active_reservation, @current_user.account.id)
-              }
-              phx-click="add_notifier"
-            >
-              Notify when available
-            </.button>
+            <div class="flex gap-4 w-full">
+              <.button
+                :if={
+                  is_nil(@notification_request) and
+                    !Reservation.owner?(@book.active_reservation, @current_user.account.id)
+                }
+                phx-click="add_notifier"
+              >
+                Notify when available
+              </.button>
+              <.button
+                :if={
+                  not is_nil(@current_user.account.active_reservation) and is_nil(@trade_request)
+                }
+                phx-click="request_trade"
+              >
+                Request a Trade
+              </.button>
+            </div>
           </div>
         <% !User.actively_reading?(@current_user.account) -> %>
           <div class="pt-12">

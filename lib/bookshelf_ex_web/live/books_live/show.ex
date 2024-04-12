@@ -1,4 +1,6 @@
 defmodule BookshelfExWeb.BooksLive.Show do
+  alias BookshelfEx.Services.RequestTradeService
+  alias BookshelfEx.Trades
   use BookshelfExWeb, :live_view
 
   alias BookshelfEx.{Reservations, Reservations.Reservation}
@@ -20,16 +22,45 @@ defmodule BookshelfExWeb.BooksLive.Show do
         do: Reservations.user_notification_request(reservation.id, user_id),
         else: nil
 
+    trade_request =
+      if reservation,
+        do: Trades.get_user_reservation_trade(reservation.id, user_id),
+        else: nil
+
     socket =
       socket
       |> assign(book: book)
+      |> assign(trade_request: trade_request)
       |> assign(notification_request: notification_request)
       |> assign(
         :current_user,
-        Users.with_assoc(socket.assigns.current_user, :account)
+        Users.with_assoc(socket.assigns.current_user, account: [:active_reservation])
       )
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("request_trade", _params, socket) do
+    sending_reservation = socket.assigns.book.active_reservation
+    receiving_reservation = socket.assigns.current_user.account.active_reservation
+
+    case RequestTradeService.request_trade(receiving_reservation, sending_reservation) do
+      {:ok, trade} ->
+        socket =
+          socket
+          |> put_flash(:info, "Requested trade to this book created successfully")
+          |> assign(:trade_request, trade)
+
+        {:noreply, socket}
+
+      {:error, _} ->
+        socket =
+          socket
+          |> put_flash(:error, "Error requesting a trade for this book")
+
+        {:noreply, socket}
+    end
   end
 
   @impl true

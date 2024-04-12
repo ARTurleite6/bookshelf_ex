@@ -13,7 +13,13 @@
 alias BookshelfEx.Repo
 alias BookshelfEx.Books.Book
 alias BookshelfEx.Users.User
+alias BookshelfEx.Trades.Trade
+alias BookshelfEx.Reservations.Reservation
+alias BookshelfEx.Notifications.NotificationRequest
 
+Repo.delete_all(Trade)
+Repo.delete_all(NotificationRequest)
+Repo.delete_all(Reservation)
 Repo.delete_all(Book)
 Repo.delete_all(User)
 Repo.delete_all(BookshelfEx.Accounts.User)
@@ -70,3 +76,15 @@ Repo.insert!(%Reservation{
   book: book,
   user: user.account
 })
+
+another_user =
+  BookshelfEx.Accounts.User.registration_changeset(%BookshelfEx.Accounts.User{}, %{
+    email: "another_user@deemaze.com",
+    password: "1234567891012",
+    account: %{
+      first_name: "Another",
+      last_name: "User",
+      is_admin: true
+    }
+  })
+  |> Repo.insert!()

@@ -1,5 +1,4 @@
 defmodule BookshelfEx.Users do
-
   alias BookshelfEx.Repo
   alias BookshelfEx.{Accounts, Accounts.User}
 

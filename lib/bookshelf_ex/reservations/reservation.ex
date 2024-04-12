@@ -12,6 +12,7 @@ defmodule BookshelfEx.Reservations.Reservation do
 
     has_many :notification_requests, BookshelfEx.Notifications.NotificationRequest
     has_many :users_to_notify, through: [:notification_requests, :user]
+    has_one :trade, BookshelfEx.Trades.Trade
 
     timestamps(type: :utc_datetime)
   end

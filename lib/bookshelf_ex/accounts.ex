@@ -6,7 +6,7 @@ defmodule BookshelfEx.Accounts do
   import Ecto.Query, warn: false
   alias BookshelfEx.Repo
 
-  alias BookshelfEx.Accounts.{User, UserToken, UserNotifier}
+  alias BookshelfEx.Accounts.{UserToken, UserNotifier, User}
 
   def with_assoc(user_or_users, assocs) do
     Repo.preload(user_or_users, assocs)

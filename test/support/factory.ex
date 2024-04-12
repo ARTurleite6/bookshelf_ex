@@ -1,10 +1,18 @@
 defmodule BookshelfEx.Factory do
   use ExMachina.Ecto, repo: BookshelfEx.Repo
+  alias BookshelfEx.Trades.Trade
   alias BookshelfEx.Notifications.NotificationRequest
   alias BookshelfEx.Accounts
   alias BookshelfEx.Users.User
   alias BookshelfEx.Books.Book
   alias BookshelfEx.Reservations.Reservation
+
+  def trade_factory do
+    %Trade{
+      sending_reservation: build(:reservation),
+      receiving_reservation: build(:reservation)
+    }
+  end
 
   def book_factory do
     %Book{
