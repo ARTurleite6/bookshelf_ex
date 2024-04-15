@@ -1,4 +1,5 @@
 defmodule BookshelfExWeb.ReservationsLive.Index do
+  alias BookshelfEx.Accounts
   alias BookshelfEx.Services.ReturnBookService
   use BookshelfExWeb, :live_view
 
@@ -6,7 +7,8 @@ defmodule BookshelfExWeb.ReservationsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    reservations = Reservations.list_reservations(assocs: [:book])
+    current_user = Accounts.with_assoc(socket.assigns.current_user, :account)
+    reservations = Reservations.user_reservations(current_user.account.id, :book)
     {:ok, stream(socket, :reservations, reservations)}
   end
 

@@ -3,6 +3,8 @@ defmodule BookshelfEx.Trades.Trade do
   import Ecto.Changeset
 
   schema "trades" do
+    field :available, :boolean
+
     belongs_to :sending_reservation, BookshelfEx.Reservations.Reservation
     belongs_to :receiving_reservation, BookshelfEx.Reservations.Reservation
 
@@ -12,10 +14,15 @@ defmodule BookshelfEx.Trades.Trade do
   @doc false
   def changeset(trade, attrs) do
     trade
-    |> cast(attrs, [:sending_reservation_id, :receiving_reservation_id])
+    |> cast(attrs, [:sending_reservation_id, :receiving_reservation_id, :available])
     |> validate_required([:sending_reservation_id, :receiving_reservation_id])
     |> unique_constraint([:sending_reservation_id, :receiving_reservation_id],
       name: :trades_sending_reservation_id_receiving_reservation_id_index
     )
+  end
+
+  def availability_changeset(trade, attrs) do
+    trade
+    |> cast(attrs, [:available])
   end
 end

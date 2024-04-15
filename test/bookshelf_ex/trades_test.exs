@@ -33,4 +33,21 @@ defmodule BookshelfEx.TradesTest do
       assert %Trade{} = Trades.get_user_reservation_trade(reservation.id, user2.account.id)
     end
   end
+
+  describe "update_trade_availability/2" do
+    test "updates the trade availability from true to false" do
+      user = insert(:account)
+      reservation = insert(:reservation, user: user.account)
+
+      user2 = insert(:account)
+      reservation2 = insert(:reservation, user: user2.account)
+
+      trade =
+        insert(:trade, sending_reservation: reservation2, receiving_reservation: reservation)
+
+      assert {:ok, trade} = Trades.update_trade_availability(trade, %{available: false})
+
+      assert trade.available == false
+    end
+  end
 end

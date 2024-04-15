@@ -26,7 +26,7 @@ defmodule BookshelfEx.Factory do
   def reservation_factory do
     %Reservation{
       book: build(:book),
-      user: build(:account).account,
+      user: build(:account),
       returned_on: nil
     }
   end

@@ -3,6 +3,7 @@
     <h1 class="font-bold text-xl">Bookshelf</h1>
   </.link>
   <div :if={@current_user} class="flex gap-4">
+    <.link navigate={~p"/trades"}>Trade Requests</.link>
     <.link navigate={~p"/reservations"}>
       <.icon name="hero-bookmark" />
     </.link>

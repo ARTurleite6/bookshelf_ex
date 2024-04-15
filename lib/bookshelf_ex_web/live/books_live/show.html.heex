@@ -34,7 +34,9 @@
               </.button>
               <.button
                 :if={
-                  not is_nil(@current_user.account.active_reservation) and is_nil(@trade_request)
+                  !Reservation.owner?(@book.active_reservation, @current_user.account.id) and
+                    not is_nil(@current_user.account.active_reservation) and
+                    is_nil(@trade_request)
                 }
                 phx-click="request_trade"
               >

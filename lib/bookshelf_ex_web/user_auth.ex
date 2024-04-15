@@ -175,7 +175,7 @@ defmodule BookshelfExWeb.UserAuth do
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
-        Accounts.get_user_by_session_token(user_token)
+        user_token |> Accounts.get_user_by_session_token() |> Accounts.with_assoc(:account)
       end
     end)
   end

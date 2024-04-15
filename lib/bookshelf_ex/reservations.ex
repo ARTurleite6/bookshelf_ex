@@ -10,6 +10,10 @@ defmodule BookshelfEx.Reservations do
     Repo.all(from(r in Reservation, order_by: [desc: r.inserted_at])) |> Repo.preload(assocs)
   end
 
+  def user_reservations(user_id, assocs \\ []) do
+    Repo.all(from r in Reservation, where: r.user_id == ^user_id, preload: ^assocs)
+  end
+
   def add_notification_request(%Reservation{} = reservation, user_id) do
     reservation
     |> Ecto.build_assoc(:notification_requests, user_id: user_id)
@@ -35,6 +39,13 @@ defmodule BookshelfEx.Reservations do
 
     Repo.all(from(r in Reservation, where: r.user_id != ^user_id and is_nil(r.returned_on)))
     |> Repo.preload(assocs)
+  end
+
+  def return_by_reservation_id!(id) do
+    Reservation
+    |> Repo.get(id)
+    |> Reservation.return_changeset(%{returned_on: Date.utc_today()})
+    |> Repo.update()
   end
 
   def return_by_reservation_id(id) do

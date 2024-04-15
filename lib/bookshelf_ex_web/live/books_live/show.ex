@@ -6,25 +6,23 @@ defmodule BookshelfExWeb.BooksLive.Show do
   alias BookshelfEx.{Reservations, Reservations.Reservation}
   alias BookshelfEx.{Users, Users.User}
   alias BookshelfEx.{Books, Books.Book}
-  alias BookshelfEx.Accounts
-  alias BookshelfEx.Services.ReserveBookService
   alias BookshelfEx.Repo
+  alias BookshelfEx.Services.ReserveBookService
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     book = Books.get_book!(id, assocs: [:active_reader])
     reservation = book.active_reservation
-
-    %Accounts.User{id: user_id} = socket.assigns.current_user
+    current_user = socket.assigns.current_user |> Users.with_assoc(account: [:active_reservation])
 
     notification_request =
       if reservation,
-        do: Reservations.user_notification_request(reservation.id, user_id),
+        do: Reservations.user_notification_request(reservation.id, current_user.id),
         else: nil
 
     trade_request =
       if reservation,
-        do: Trades.get_user_reservation_trade(reservation.id, user_id),
+        do: Trades.get_user_reservation_trade(reservation.id, current_user.account.id),
         else: nil
 
     socket =
@@ -34,7 +32,7 @@ defmodule BookshelfExWeb.BooksLive.Show do
       |> assign(notification_request: notification_request)
       |> assign(
         :current_user,
-        Users.with_assoc(socket.assigns.current_user, account: [:active_reservation])
+        current_user
       )
 
     {:ok, socket}
@@ -42,8 +40,8 @@ defmodule BookshelfExWeb.BooksLive.Show do
 
   @impl true
   def handle_event("request_trade", _params, socket) do
-    sending_reservation = socket.assigns.book.active_reservation
-    receiving_reservation = socket.assigns.current_user.account.active_reservation
+    receiving_reservation = socket.assigns.book.active_reservation
+    sending_reservation = socket.assigns.current_user.account.active_reservation
 
     case RequestTradeService.request_trade(receiving_reservation, sending_reservation) do
       {:ok, trade} ->
