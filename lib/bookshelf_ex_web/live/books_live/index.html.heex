@@ -15,7 +15,7 @@
         </td>
         <td>
           <h1 class="text-xl font-bold py-5 hover:underline hover:cursor-pointer">
-            <.link navigate={"/books/#{book.id}"}>
+            <.link id={"#{id}-redirect"} navigate={"/books/#{book.id}"}>
               <%= book.title %>
             </.link>
           </h1>
@@ -24,7 +24,7 @@
         <td>
           <ul>
             <li>
-              <.link patch={~p"/books/#{book.id}/edit"}>
+              <.link id={id} patch={~p"/books/#{book.id}/edit"}>
                 Edit
               </.link>
             </li>

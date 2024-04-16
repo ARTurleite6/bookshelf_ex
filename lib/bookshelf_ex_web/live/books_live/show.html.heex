@@ -47,6 +47,7 @@
         <% !User.actively_reading?(@current_user.account) -> %>
           <div class="pt-12">
             <.button
+              id="reserve-book"
               phx-click="reserve"
               class="w-full rounded-lg py-3 px-5 text-white font-medium cursor-pointer"
             >
