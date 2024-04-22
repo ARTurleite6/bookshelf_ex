@@ -1,6 +1,6 @@
 defmodule BookshelfEx.Users do
   alias BookshelfEx.Repo
-  alias BookshelfEx.{Accounts, Accounts.User}
+  alias BookshelfEx.{Accounts, Accounts.User, Users}
 
   import Ecto.Query
 
@@ -10,6 +10,10 @@ defmodule BookshelfEx.Users do
     Repo.all(
       from u in User, join: a in assoc(u, :account), where: a.is_admin == true, preload: ^assocs
     )
+  end
+
+  def change_user(%Users.User{} = user, attrs \\ %{}) do
+    Users.User.changeset(user, attrs)
   end
 
   def with_assoc(user_or_users, assoc) do

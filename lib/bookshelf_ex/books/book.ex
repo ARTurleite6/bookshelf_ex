@@ -23,6 +23,13 @@ defmodule BookshelfEx.Books.Book do
         :productivity
       ]
 
+    field :office, Ecto.Enum,
+      values: [
+        :coimbra,
+        :braga
+      ],
+      default: :coimbra
+
     has_many :reservations, BookshelfEx.Reservations.Reservation
     has_one :active_reservation, BookshelfEx.Reservations.Reservation, where: [returned_on: nil]
     has_one :active_reader, through: [:active_reservation, :user]
@@ -33,7 +40,7 @@ defmodule BookshelfEx.Books.Book do
   @doc false
   def changeset(book, attrs) do
     book
-    |> cast(attrs, [:title, :description, :cover_url, :genre])
+    |> cast(attrs, [:title, :description, :cover_url, :genre, :office])
     |> validate_required([:title, :description, :cover_url, :genre])
   end
 

@@ -65,7 +65,44 @@ user =
     account: %{
       first_name: "Artur",
       last_name: "Leite",
+      office: :braga,
       is_admin: true
+    }
+  })
+  |> Repo.insert!()
+
+user =
+  BookshelfEx.Accounts.User.registration_changeset(%BookshelfEx.Accounts.User{}, %{
+    email: "pepas@deemaze.com",
+    password: "1234567891012",
+    account: %{
+      first_name: "Pedro",
+      last_name: "Batista",
+      office: :braga
+    }
+  })
+  |> Repo.insert!()
+
+user =
+  BookshelfEx.Accounts.User.registration_changeset(%BookshelfEx.Accounts.User{}, %{
+    email: "monteiro@deemaze.com",
+    password: "1234567891012",
+    account: %{
+      first_name: "João",
+      last_name: "Monteiro",
+      office: :coimbra
+    }
+  })
+  |> Repo.insert!()
+
+user =
+  BookshelfEx.Accounts.User.registration_changeset(%BookshelfEx.Accounts.User{}, %{
+    email: "johny@deemaze.com",
+    password: "1234567891012",
+    account: %{
+      first_name: "João",
+      last_name: "Oliveira",
+      office: :coimbra
     }
   })
   |> Repo.insert!()
@@ -76,15 +113,3 @@ Repo.insert!(%Reservation{
   book: book,
   user: user.account
 })
-
-another_user =
-  BookshelfEx.Accounts.User.registration_changeset(%BookshelfEx.Accounts.User{}, %{
-    email: "another_user@deemaze.com",
-    password: "1234567891012",
-    account: %{
-      first_name: "Another",
-      last_name: "User",
-      is_admin: true
-    }
-  })
-  |> Repo.insert!()

@@ -1,8 +1,10 @@
 defmodule BookshelfEx.Mailers.ReservationEndedMailer do
-  alias BookshelfEx.Users
-  alias BookshelfEx.Books.Book
-  alias BookshelfEx.Accounts
-  alias BookshelfEx.Mailer
+  alias BookshelfEx.{
+    Accounts,
+    Books.Book,
+    Mailer,
+    Users
+  }
 
   import Swoosh.Email
 
@@ -11,7 +13,7 @@ defmodule BookshelfEx.Mailers.ReservationEndedMailer do
 
     new()
     |> from(Mailer.default_from())
-    |> to({Users.User.full_name(user), user.email})
+    |> to({Users.User.full_name(user.account), user.email})
     |> subject("The #{book.title} is finally available")
     |> html_body("<h1>The book you asked for notificaitons is finally available")
   end

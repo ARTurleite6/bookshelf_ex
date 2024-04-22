@@ -8,8 +8,10 @@
       <.icon name="hero-bookmark" />
     </.link>
     <div class="flex gap-2">
-      <%= @current_user.account.first_name %>
-      <.icon name="hero-user" />
+      <.link phx-click={JS.navigate("/users/settings")}>
+        <%= @current_user.account.first_name %>
+        <.icon name="hero-user" />
+      </.link>
     </div>
     <.link
       href={~p"/users/log_out"}

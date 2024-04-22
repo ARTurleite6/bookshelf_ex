@@ -14,6 +14,13 @@ defmodule BookshelfEx.Factory do
     }
   end
 
+  def notification_factory do
+    %NotificationRequest{
+      user: build(:account),
+      reservation: build(:reservation)
+    }
+  end
+
   def book_factory do
     %Book{
       title: Faker.Person.title(),

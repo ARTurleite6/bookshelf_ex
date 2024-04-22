@@ -1,9 +1,13 @@
 defmodule BookshelfEx.Services.ReturnBookService do
-  alias BookshelfEx.Mailers.ReservationEndedMailer
-  alias BookshelfEx.Mailer
-  alias BookshelfEx.Users
-  alias BookshelfEx.Reservations
-  alias BookshelfEx.Mailers.AdminMailer
+  alias BookshelfEx.{
+    Books.Book,
+    Mailer,
+    Reservations,
+    Reservations.Reservation,
+    Mailers.AdminMailer,
+    Mailers.ReservationEndedMailer,
+    Users
+  }
 
   @spec return_book(reservation_id :: integer()) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
@@ -11,9 +15,9 @@ defmodule BookshelfEx.Services.ReturnBookService do
     case Reservations.return_by_reservation_id(reservation_id) do
       {:ok, reservation} ->
         reservation = Reservations.with_assoc(reservation, :book)
-        notify_admins(reservation)
 
-        notify_users(reservation)
+        List.flatten([notify_admins(reservation.book), notify_users(reservation)])
+        |> Mailer.deliver_many()
 
         {:ok, reservation}
 
@@ -22,21 +26,18 @@ defmodule BookshelfEx.Services.ReturnBookService do
     end
   end
 
-  defp notify_admins(book) do
+  defp notify_admins(%Book{} = book) do
     admins = Users.list_admins()
 
-    for admin <- admins do
-      AdminMailer.new_reservation_ending_email(book, admin)
-    end
-    |> Mailer.deliver_many()
+    Enum.map(admins, &AdminMailer.new_reservation_ending_email(book, &1))
   end
 
-  defp notify_users(reservation) do
+  defp notify_users(%Reservation{} = reservation) do
     reservation = Reservations.with_assoc(reservation, [:users_to_notify])
 
-    for user <- reservation.users_to_notify do
-      ReservationEndedMailer.reservation_ended_mail(reservation.book, user)
-    end
-    |> Mailer.deliver_many()
+    Enum.map(
+      reservation.users_to_notify,
+      &ReservationEndedMailer.reservation_ended_mail(reservation.book, &1)
+    )
   end
 end

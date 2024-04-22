@@ -6,6 +6,14 @@ defmodule BookshelfEx.Users.User do
   schema "accounts" do
     field :first_name, :string
     field :last_name, :string
+
+    field :office, Ecto.Enum,
+      values: [
+        :coimbra,
+        :braga
+      ],
+      default: :coimbra
+
     field :is_admin, :boolean, default: false
 
     has_many :reservations, BookshelfEx.Reservations.Reservation
@@ -20,8 +28,8 @@ defmodule BookshelfEx.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :is_admin])
-    |> validate_required([:first_name, :last_name, :is_admin])
+    |> cast(attrs, [:first_name, :last_name, :is_admin, :office])
+    |> validate_required([:first_name, :last_name])
   end
 
   def actively_reading?(%__MODULE__{} = user) do

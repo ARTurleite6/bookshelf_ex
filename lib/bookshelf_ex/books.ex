@@ -1,10 +1,7 @@
 defmodule BookshelfEx.Books do
   import Ecto.Query
 
-  alias BookshelfEx.Users
-  alias BookshelfEx.Reservations.Reservation
-  alias BookshelfEx.Repo
-  alias BookshelfEx.Books.Book
+  alias BookshelfEx.{Books.Book, Repo, Reservations.Reservation, Users}
 
   def list_books do
     Repo.all(from b in Book, order_by: [asc: b.inserted_at])
@@ -23,9 +20,13 @@ defmodule BookshelfEx.Books do
   end
 
   def reserve_book(%Book{} = book, %Users.User{} = user) do
-    %Reservation{}
-    |> Reservation.changeset(%{book_id: book.id, user_id: user.id})
-    |> Repo.insert()
+    Repo.transaction(fn ->
+      update_book(book, %{office: user.office})
+
+      %Reservation{}
+      |> Reservation.changeset(%{book_id: book.id, user_id: user.id})
+      |> Repo.insert!()
+    end)
   end
 
   def reserve_book!(%Book{} = book, %Users.User{} = user) do
