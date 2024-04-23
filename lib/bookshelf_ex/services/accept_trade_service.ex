@@ -16,7 +16,7 @@ defmodule BookshelfEx.Services.AcceptTradeService do
         receiving_reservation: [:user, :book]
       )
 
-    trade = Trades.update_trade_availability!(trade, %{available: false})
+    trade = Trades.update_trade_availability!(trade, %{status: :accepted})
 
     Reservations.return_by_reservation_id!(trade.sending_reservation_id)
     Reservations.return_by_reservation_id!(trade.receiving_reservation_id)

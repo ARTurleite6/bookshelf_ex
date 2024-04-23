@@ -19,7 +19,7 @@ defmodule BookshelfEx.Services.AcceptTradeServiceTest do
       assert {:ok, {trade, reservation_1, reservation_2}} =
                AcceptTradeService.accept_trade(trade)
 
-      assert trade.available == false
+      assert trade.status == :accepted
 
       assert reservation_2.user_id == user2.account.id
       assert reservation_2.book_id == reservation.book_id

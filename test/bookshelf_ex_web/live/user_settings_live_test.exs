@@ -1,7 +1,7 @@
 defmodule BookshelfExWeb.UserSettingsLiveTest do
   use BookshelfExWeb.ConnCase, async: true
 
-  alias BookshelfEx.Accounts
+  alias BookshelfEx.{Accounts, Accounts.User, Repo}
   import Phoenix.LiveViewTest
   import BookshelfEx.AccountsFixtures
 
@@ -22,6 +22,36 @@ defmodule BookshelfExWeb.UserSettingsLiveTest do
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
       assert %{"error" => "You must log in to access this page."} = flash
+    end
+  end
+
+  describe "update account form" do
+    setup %{conn: conn} do
+      password = valid_user_password()
+      user = user_fixture(%{password: password})
+      %{conn: log_in_user(conn, user), user: user, password: password}
+    end
+
+    test "updates the user account", %{conn: conn, password: password, user: user} do
+      new_account = %{
+        "first_name" => "Some first name",
+        "last_name" => "Some last name",
+        "office" => "braga"
+      }
+
+      {:ok, lv, _html} = live(conn, ~p"/users/settings")
+
+      lv
+      |> form("#account_form", %{
+        "current_password" => password,
+        "user" => new_account
+      })
+      |> render_submit()
+
+      %User{account: account} = Repo.preload(user, :account, force: true)
+      assert account.first_name == new_account["first_name"]
+      assert account.last_name == new_account["last_name"]
+      assert account.office == String.to_atom(new_account["office"])
     end
   end
 

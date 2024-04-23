@@ -1,9 +1,25 @@
 defmodule BookshelfEx.Trades do
   import Ecto.Query
 
-  alias BookshelfEx.Repo
-  alias BookshelfEx.Reservations.Reservation
-  alias BookshelfEx.Trades.Trade
+  alias BookshelfEx.{Repo, Reservations.Reservation, Trades.Trade, Users.User}
+
+  def user_involved_trades(user_id) do
+    Repo.all(
+      from(t in Trade,
+        join: r in Reservation,
+        on: r.id == t.sending_reservation_id or r.id == t.receiving_reservation_id,
+        where: r.user_id == ^user_id
+      )
+    )
+  end
+
+  def preload_reservations(trade_or_trades) do
+    trade_or_trades
+    |> Repo.preload(
+      sending_reservation: [:book, user: [:user]],
+      receiving_reservation: [:book, user: [:user]]
+    )
+  end
 
   def create_trade(attrs) do
     %Trade{}
