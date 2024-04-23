@@ -4,12 +4,14 @@ defmodule BookshelfEx.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias BookshelfEx.Users
   alias BookshelfEx.Repo
 
   alias BookshelfEx.Accounts.{User, UserNotifier, UserToken}
 
-  def with_assoc(user_or_users, assocs) do
-    Repo.preload(user_or_users, assocs)
+  def with_assoc(user_or_users, assocs, opts \\ []) do
+    force = Keyword.get(opts, :force, false)
+    Repo.preload(user_or_users, assocs, force: force)
   end
 
   ## Database getters
@@ -98,6 +100,14 @@ defmodule BookshelfEx.Accounts do
   end
 
   ## Settings
+
+  def update_user_account(%User{} = user, password, attrs \\ %{}) do
+    if User.valid_password?(user, password) do
+      Users.update_user(user.account, attrs)
+    else
+      {:error, "Invalid password"}
+    end
+  end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for changing the user email.

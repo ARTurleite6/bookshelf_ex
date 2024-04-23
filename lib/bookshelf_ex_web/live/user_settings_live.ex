@@ -137,6 +137,45 @@ defmodule BookshelfExWeb.UserSettingsLive do
     {:ok, socket}
   end
 
+  def handle_event(
+        "validate_account",
+        %{"current_password" => password, "user" => account_params},
+        socket
+      ) do
+    account_form =
+      socket.assigns.current_user.account
+      |> Users.change_user(account_params)
+      |> Map.put(:action, :validate)
+      |> to_form()
+
+    {:noreply,
+     assign(socket, account_form: account_form, account_form_current_password: password)}
+  end
+
+  def handle_event(
+        "update_account",
+        %{"current_password" => password, "user" => account_params},
+        socket
+      ) do
+    current_user = socket.assigns.current_user
+
+    case Accounts.update_user_account(current_user, password, account_params) do
+      {:ok, _} ->
+        user = socket.assigns.current_user |> Accounts.with_assoc(:account, force: true)
+        account_form = user.account |> Users.change_user() |> to_form()
+
+        socket =
+          socket
+          |> put_flash(:info, "Account settings successfully updated")
+          |> assign(account_form: account_form)
+
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, account_form: to_form(changeset))}
+    end
+  end
+
   def handle_event("validate_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
 

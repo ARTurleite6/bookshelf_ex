@@ -16,6 +16,12 @@ defmodule BookshelfEx.Users do
     Users.User.changeset(user, attrs)
   end
 
+  def update_user(%Users.User{} = user, attrs \\ %{}) do
+    user
+    |> Users.User.changeset(attrs)
+    |> Repo.update()
+  end
+
   def with_assoc(user_or_users, assoc) do
     Repo.preload(user_or_users, assoc)
   end
