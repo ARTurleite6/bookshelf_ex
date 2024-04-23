@@ -2,6 +2,7 @@ defmodule BookshelfEx.Books do
   import Ecto.Query
 
   alias BookshelfEx.{Books.Book, Repo, Reservations.Reservation, Users}
+  alias Ecto.Multi
 
   def list_books do
     Repo.all(from b in Book, order_by: [asc: b.inserted_at])
@@ -20,13 +21,13 @@ defmodule BookshelfEx.Books do
   end
 
   def reserve_book(%Book{} = book, %Users.User{} = user) do
-    Repo.transaction(fn ->
-      update_book(book, %{office: user.office})
-
-      %Reservation{}
-      |> Reservation.changeset(%{book_id: book.id, user_id: user.id})
-      |> Repo.insert!()
-    end)
+    Multi.new()
+    |> Multi.update(:book, Book.changeset(book, %{office: user.office}))
+    |> Multi.insert(
+      :reservation,
+      Reservation.changeset(%Reservation{}, %{book_id: book.id, user_id: user.id})
+    )
+    |> Repo.transaction()
   end
 
   def reserve_book!(%Book{} = book, %Users.User{} = user) do

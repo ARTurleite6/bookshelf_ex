@@ -1,14 +1,20 @@
 defmodule BookshelfEx.Trades do
   import Ecto.Query
 
-  alias BookshelfEx.{Repo, Reservations.Reservation, Trades.Trade, Users.User}
+  alias BookshelfEx.{
+    Repo,
+    Reservations.Reservation,
+    Trades.Trade,
+    Trades.TradeNotifier
+  }
 
   def user_involved_trades(user_id) do
     Repo.all(
       from(t in Trade,
         join: r in Reservation,
         on: r.id == t.sending_reservation_id or r.id == t.receiving_reservation_id,
-        where: r.user_id == ^user_id
+        where: r.user_id == ^user_id,
+        order_by: [desc: :inserted_at]
       )
     )
   end
@@ -22,9 +28,16 @@ defmodule BookshelfEx.Trades do
   end
 
   def create_trade(attrs) do
-    %Trade{}
-    |> Trade.changeset(attrs)
-    |> Repo.insert()
+    trade =
+      %Trade{}
+      |> Trade.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, trade} <- trade do
+      TradeNotifier.deliver_new_trade_request(trade)
+    end
+
+    trade
   end
 
   def get_trade!(trade_id) do

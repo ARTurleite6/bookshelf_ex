@@ -53,7 +53,7 @@ defmodule BookshelfEx.BooksTest do
       reservation = insert(:reservation, user: user.account, book: reserved_book)
 
       book = insert(:book)
-      assert {:error, _} = BookshelfEx.Books.reserve_book(book, user.account)
+      assert {:error, _, _, _} = BookshelfEx.Books.reserve_book(book, user.account)
     end
   end
 

@@ -1,5 +1,4 @@
 defmodule BookshelfExWeb.BooksLive.Show do
-  alias BookshelfEx.Services.RequestTradeService
   alias BookshelfEx.Trades
   use BookshelfExWeb, :live_view
 
@@ -43,7 +42,10 @@ defmodule BookshelfExWeb.BooksLive.Show do
     receiving_reservation = socket.assigns.book.active_reservation
     sending_reservation = socket.assigns.current_user.account.active_reservation
 
-    case RequestTradeService.request_trade(receiving_reservation, sending_reservation) do
+    case Trades.create_trade(
+           receiving_reservation_id: receiving_reservation.id,
+           sending_reservation_id: sending_reservation.id
+         ) do
       {:ok, trade} ->
         socket =
           socket

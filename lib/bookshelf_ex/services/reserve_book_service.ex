@@ -12,7 +12,7 @@ defmodule BookshelfEx.Services.ReserveBookService do
     admins = Users.list_admins()
 
     case result do
-      {:ok, reservation} ->
+      {:ok, %{reservation: reservation}} ->
         for admin <- admins do
           AdminMailer.new_reservation_email(reservation, admin)
         end
@@ -20,8 +20,8 @@ defmodule BookshelfEx.Services.ReserveBookService do
 
         {:ok, reservation}
 
-      {:error, changeset} ->
-        {:error, changeset}
+      {:error, _, _, _} ->
+        {:error, "Error reserving the book"}
     end
   end
 end

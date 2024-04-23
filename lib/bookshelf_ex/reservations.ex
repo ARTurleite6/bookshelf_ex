@@ -11,7 +11,12 @@ defmodule BookshelfEx.Reservations do
   end
 
   def user_reservations(user_id, assocs \\ []) do
-    Repo.all(from r in Reservation, where: r.user_id == ^user_id, preload: ^assocs)
+    Repo.all(
+      from r in Reservation,
+        where: r.user_id == ^user_id,
+        preload: ^assocs,
+        order_by: [desc: :inserted_at]
+    )
   end
 
   def add_notification_request(%Reservation{} = reservation, user_id) do
